@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siemens AG — Predictive Maintenance & Fleet Operations Platform</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="obsidian-theme">
+    <!-- Top Global Header -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="siemens-brand">
+                <span class="brand-text">SIEMENS</span>
+                <span class="brand-sub">Digital Industries & Energy</span>
+            </div>
+            <div class="header-divider"></div>
+            <div class="project-title">
+                <h1>Predictive Maintenance for Business Operations</h1>
+                <span class="badge-tag"><i class="fa-solid fa-microchip"></i> PROJECT - 09</span>
+            </div>
+        </div>
+
+        <div class="header-right">
+            <div class="live-status-pill">
+                <span class="pulse-beacon"></span>
+                <span>MindSphere Edge Stream: <b>Connected</b></span>
+            </div>
+            <a href="/download_report" class="btn btn-primary" id="btnDownloadReport" target="_blank">
+                <i class="fa-solid fa-file-pdf"></i> Download Executive PDF Report
+            </a>
+        </div>
+    </header>
+
+    <!-- Executive KPI Banner -->
+    <section class="kpi-banner">
+        <div class="kpi-card">
+            <div class="kpi-icon-wrap cyan"><i class="fa-solid fa-server"></i></div>
+            <div class="kpi-content">
+                <span class="kpi-label">Monitored Fleet</span>
+                <h3 class="kpi-val" id="kpiFleetCount">50 Assets</h3>
+                <span class="kpi-delta positive"><i class="fa-solid fa-globe"></i> 5 Global Plants</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon-wrap green"><i class="fa-solid fa-heart-pulse"></i></div>
+            <div class="kpi-content">
+                <span class="kpi-label">Fleet Health Index</span>
+                <h3 class="kpi-val" id="kpiFleetHealth">94.2%</h3>
+                <span class="kpi-delta positive" id="kpiHealthBreakdown">35 Optimal | 9 Warn | 6 Crit</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon-wrap amber"><i class="fa-solid fa-clock-rotate-left"></i></div>
+            <div class="kpi-content">
+                <span class="kpi-label">Early Warning Horizon</span>
+                <h3 class="kpi-val" id="kpiWarningHorizon">38.5 Hours</h3>
+                <span class="kpi-delta positive"><i class="fa-solid fa-arrow-trend-up"></i> +35.7h vs SCADA Alarms</span>
+            </div>
+        </div>
+
+        <div class="kpi-card">
+            <div class="kpi-icon-wrap teal"><i class="fa-solid fa-shield-halved"></i></div>
+            <div class="kpi-content">
+                <span class="kpi-label">Downtime Prevented</span>
+                <h3 class="kpi-val" id="kpiDowntimeSaved">2,640 Hours</h3>
+                <span class="kpi-delta positive"><i class="fa-solid fa-circle-check"></i> 88.6% Stoppage Reduction</span>
+            </div>
+        </div>
+
+        <div class="kpi-card highlight-glow">
+            <div class="kpi-icon-wrap emerald"><i class="fa-solid fa-sack-dollar"></i></div>
+            <div class="kpi-content">
+                <span class="kpi-label">Net Preserved Value</span>
+                <h3 class="kpi-val" id="kpiPreservedValue">$18.44M USD</h3>
+                <span class="kpi-delta positive"><i class="fa-solid fa-chart-line"></i> Annualized Net ROI +1,840%</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="nav-tabs-container">
+        <div class="tabs-wrapper">
+            <button class="nav-tab active" data-tab="tab-fleet"><i class="fa-solid fa-cubes-stacked"></i> Fleet Digital Twin Grid</button>
+            <button class="nav-tab" data-tab="tab-deepdive"><i class="fa-solid fa-magnifying-glass-chart"></i> Machine Diagnostics & Dispatch</button>
+            <button class="nav-tab" data-tab="tab-scheduler"><i class="fa-solid fa-calendar-check"></i> MES Schedule vs Maintenance Sync</button>
+            <button class="nav-tab" data-tab="tab-simulation"><i class="fa-solid fa-sliders"></i> What-If Counterfactual Simulator</button>
+            <button class="nav-tab" data-tab="tab-analytics"><i class="fa-solid fa-chart-pie"></i> Enterprise Analytics & ROI</button>
+        </div>
+        <div class="tab-meta">
+            <span id="activeTimestamp">Telemetry Sync: Active</span>
+        </div>
+    </nav>
+
+    <!-- Main Content Container -->
+    <main class="main-content">
+        <!-- ================= TAB 1: FLEET DIGITAL TWIN GRID ================= -->
+        <div class="tab-pane active" id="tab-fleet">
+            <div class="fleet-controls-bar">
+                <div class="filters-group">
+                    <div class="filter-item">
+                        <label><i class="fa-solid fa-industry"></i> Plant:</label>
+                        <select id="filterPlant">
+                            <option value="ALL">All Siemens Plants (5 Sites)</option>
+                            <option value="Erlangen">Erlangen Electronics Works</option>
+                            <option value="Amberg">Amberg Digital Enterprise</option>
+                            <option value="Berlin">Berlin Gas Turbine Works</option>
+                            <option value="Nuremberg">Nuremberg Large Drives Plant</option>
+                            <option value="Karlsruhe">Karlsruhe Process Works</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label><i class="fa-solid fa-gear"></i> Asset Type:</label>
+                        <select id="filterAssetType">
+                            <option value="ALL">All Asset Families</option>
+                            <option value="Sinumerik">Sinumerik 5-Axis CNC Mill</option>
+                            <option value="Turbine">SGT-800 Gas Turbine</option>
+                            <option value="Simotics">Simotics HV Induction Motor</option>
+                            <option value="Robotic">Robotic Welding Cell</option>
+                            <option value="Compressor">STC Centrifugal Compressor</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-item">
+                        <label><i class="fa-solid fa-circle-exclamation"></i> Health State:</label>
+                        <select id="filterHealthStatus">
+                            <option value="ALL">All Health States</option>
+                            <option value="Critical">Critical (Protocol Alpha/Beta)</option>
+                            <option value="Warning">Warning (Protocol Gamma)</option>
+                            <option value="Optimal">Optimal (Protocol Delta)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="fleetSearchInput" placeholder="Search Machine ID, Plant, or Serial...">
+                </div>
+            </div>
+
+            <!-- Fleet Grid Cards -->
+            <div class="fleet-grid" id="fleetGridContainer">
+                <!-- Dynamically populated via dashboard.js -->
+                <div class="loading-spinner"><i class="fa-solid fa-circle-notch fa-spin"></i> Ingesting Siemens MindSphere Fleet Telemetry...</div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 2: MACHINE DEEP DIVE & DISPATCH ================= -->
+        <div class="tab-pane" id="tab-deepdive">
+            <div class="deepdive-layout">
+                <!-- Left Sidebar: Machine Selector -->
+                <div class="machine-selector-pane">
+                    <div class="pane-header">
+                        <h3><i class="fa-solid fa-list-check"></i> Select Machine Asset</h3>
+                        <span class="badge" id="selectorCount">50 Assets</span>
+                    </div>
+                    <div class="machine-list" id="deepdiveMachineList">
+                        <!-- Populated dynamically -->
+                    </div>
+                </div>
+
+                <!-- Right Pane: Machine Diagnostics & Work Order Dispatch -->
+                <div class="machine-detail-pane" id="machineDetailPane">
+                    <div class="pane-header detail-header">
+                        <div class="machine-title-group">
+                            <span class="machine-tag" id="detailMachineTag">SMN-ERL-001</span>
+                            <h2 id="detailMachineName">Siemens Sinumerik 840D High-Speed 5-Axis Mill</h2>
+                            <p id="detailMachineMeta"><i class="fa-solid fa-location-dot"></i> Erlangen, Germany | Tier 1 Criticality | Downtime: $240,000/hr</p>
+                        </div>
+                        <div class="header-actions">
+                            <span class="status-badge" id="detailStatusBadge">Optimal</span>
+                        </div>
+                    </div>
+
+                    <!-- Telemetry Metrics Gauges Grid -->
+                    <div class="sensor-gauges-grid">
+                        <div class="gauge-card">
+                            <span class="gauge-title"><i class="fa-solid fa-wave-square"></i> Vibration RMS</span>
+                            <div class="gauge-value" id="gaugeVibration">1.45 <span class="unit">mm/s</span></div>
+                            <div class="gauge-bar-track"><div class="gauge-bar-fill" id="gaugeBarVib" style="width: 25%;"></div></div>
+                            <span class="gauge-sub" id="gaugeSubVib">ISO 10816: Normal (<4.5 mm/s)</span>
+                        </div>
+
+                        <div class="gauge-card">
+                            <span class="gauge-title"><i class="fa-solid fa-temperature-half"></i> Bearing Temp</span>
+                            <div class="gauge-value" id="gaugeTemp">54.2 <span class="unit">°C</span></div>
+                            <div class="gauge-bar-track"><div class="gauge-bar-fill" id="gaugeBarTemp" style="width: 40%;"></div></div>
+                            <span class="gauge-sub" id="gaugeSubTemp">Baseline: 52°C | Alarm: >80°C</span>
+                        </div>
+
+                        <div class="gauge-card">
+                            <span class="gauge-title"><i class="fa-solid fa-droplet"></i> Lube Oil Pressure</span>
+                            <div class="gauge-value" id="gaugePressure">5.15 <span class="unit">bar</span></div>
+                            <div class="gauge-bar-track"><div class="gauge-bar-fill green" id="gaugeBarPress" style="width: 75%;"></div></div>
+                            <span class="gauge-sub" id="gaugeSubPress">Nominal: 4.8 - 5.8 bar</span>
+                        </div>
+
+                        <div class="gauge-card">
+                            <span class="gauge-title"><i class="fa-solid fa-volume-high"></i> Acoustic Emission</span>
+                            <div class="gauge-value" id="gaugeAcoustic">48.5 <span class="unit">dB</span></div>
+                            <div class="gauge-bar-track"><div class="gauge-bar-fill" id="gaugeBarAcoustic" style="width: 35%;"></div></div>
+                            <span class="gauge-sub" id="gaugeSubAcoustic">Ultrasonic: Micro-cracking tripwire</span>
+                        </div>
+
+                        <div class="gauge-card">
+                            <span class="gauge-title"><i class="fa-solid fa-bolt"></i> Electrical Load</span>
+                            <div class="gauge-value" id="gaugeLoad">74.0 <span class="unit">%</span></div>
+                            <div class="gauge-bar-track"><div class="gauge-bar-fill" id="gaugeBarLoad" style="width: 62%;"></div></div>
+                            <span class="gauge-sub" id="gaugeSubLoad">Rated Drive Torque Capacity</span>
+                        </div>
+                    </div>
+
+                    <!-- Diagnostics Split Grid -->
+                    <div class="diagnostics-split">
+                        <!-- Left: Diagnostic Prediction & RUL -->
+                        <div class="glass-panel">
+                            <div class="panel-header">
+                                <h4><i class="fa-solid fa-brain"></i> AI Diagnostic Prognosis</h4>
+                                <span class="badge" id="diagAnomalyBadge">Normal Signature</span>
+                            </div>
+                            <div class="diag-summary-box">
+                                <div class="diag-stat">
+                                    <span class="stat-lbl">Failure Risk Probability</span>
+                                    <h3 class="stat-num" id="diagFailureProb">4.2%</h3>
+                                </div>
+                                <div class="diag-stat">
+                                    <span class="stat-lbl">Diagnosed Failure Mode</span>
+                                    <h3 class="stat-num highlight" id="diagPattern">No_Failure</h3>
+                                </div>
+                                <div class="diag-stat">
+                                    <span class="stat-lbl">Remaining Useful Life (RUL)</span>
+                                    <h3 class="stat-num" id="diagRUL">340.5 Hours</h3>
+                                </div>
+                            </div>
+
+                            <!-- Failure Pattern Probabilities Bars -->
+                            <div class="pattern-probs-container">
+                                <h5>Multi-Class Diagnostic Probabilities</h5>
+                                <div id="patternProbsList">
+                                    <!-- Populated dynamically -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Right: Prescriptive Action Protocol Card -->
+                        <div class="glass-panel prescriptive-card">
+                            <div class="panel-header">
+                                <h4><i class="fa-solid fa-clipboard-check"></i> Prescriptive Autonomous Protocol</h4>
+                                <span class="protocol-badge" id="protoBadge">PROTOCOL_DELTA</span>
+                            </div>
+                            <div class="protocol-content">
+                                <h3 id="protoName">Predictive ERP Requisition & Schedule Sync</h3>
+                                <p class="proto-summary" id="protoSummary">Autonomous SAP PM work order generation for upcoming scheduled maintenance window.</p>
+                                
+                                <div class="proto-meta-grid">
+                                    <div class="meta-cell">
+                                        <span class="meta-label">Required Specialist:</span>
+                                        <b id="protoTech">Grade 1 / Automated Procurement</b>
+                                    </div>
+                                    <div class="meta-cell">
+                                        <span class="meta-label">Replacement Kit BOM:</span>
+                                        <b id="protoBOM">Standard Gasket & Seal Pack (#SMN-1104)</b>
+                                    </div>
+                                    <div class="meta-cell">
+                                        <span class="meta-label">Expected MTTR:</span>
+                                        <b id="protoMTTR">3.0 Hours</b>
+                                    </div>
+                                    <div class="meta-cell">
+                                        <span class="meta-label">Prevented Downtime:</span>
+                                        <b id="protoSavedHours">5.0 Hours Saved</b>
+                                    </div>
+                                </div>
+
+                                <div class="proto-steps">
+                                    <h5>Operational Execution Directives:</h5>
+                                    <ol id="protoStepsList">
+                                        <!-- Step items populated -->
+                                    </ol>
+                                </div>
+
+                                <div class="proto-cta-box">
+                                    <div class="value-preserved-pill">
+                                        <span>Preserved Business Value:</span>
+                                        <b id="protoPreservedValue">$1,196,500</b>
+                                    </div>
+                                    <button class="btn btn-emerald" id="btnDispatchWorkOrder">
+                                        <i class="fa-solid fa-paper-plane"></i> Dispatch Work Order to MindSphere & SAP PM
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 3: MES SCHEDULE VS MAINTENANCE SYNC ================= -->
+        <div class="tab-pane" id="tab-scheduler">
+            <div class="glass-panel">
+                <div class="panel-header">
+                    <div class="title-wrap">
+                        <h3><i class="fa-solid fa-calendar-check"></i> MES Production Schedule vs Maintenance Window Synchronizer</h3>
+                        <p class="subtitle">Resolves the conflict between mission-critical customer delivery deadlines and physical degradation curves.</p>
+                    </div>
+                    <div class="legend-pills">
+                        <span class="legend-pill tier1"><i class="fa-solid fa-circle"></i> Tier 1 (Urgent/Penalized)</span>
+                        <span class="legend-pill tier2"><i class="fa-solid fa-circle"></i> Tier 2 (Standard Contract)</span>
+                        <span class="legend-pill tier3"><i class="fa-solid fa-circle"></i> Tier 3 (Buffer Shift)</span>
+                    </div>
+                </div>
+
+                <div class="scheduler-matrix-container">
+                    <table class="scheduler-table">
+                        <thead>
+                            <tr>
+                                <th>Machine ID & Asset</th>
+                                <th>Active ERP Batch</th>
+                                <th>Priority Tier</th>
+                                <th>Current Shift</th>
+                                <th>Countdown to PM Window</th>
+                                <th>Failure Risk</th>
+                                <th>RUL vs Window Delta</th>
+                                <th>Recommended Action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="schedulerTableBody">
+                            <!-- Populated dynamically via dashboard.js -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Protocol Beta Spotlight Card -->
+                <div class="protocol-beta-spotlight">
+                    <div class="spotlight-icon"><i class="fa-solid fa-bolt-lightning"></i></div>
+                    <div class="spotlight-content">
+                        <h4>Protocol Beta in Action: The Load-Throttling Bridge</h4>
+                        <p>When an asset with elevated degradation is locked into a Tier-1 urgent customer order, stopping immediately triggers $250k in contractual default penalties. The Siemens Prescriptive Engine issues an automated PLC command throttling speed and feed rate by 18%, reducing thermal stress and extending RUL by +35% to bridge into the scheduled 2-hour changeover window with zero production interruption.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 4: WHAT-IF COUNTERFACTUAL SIMULATOR ================= -->
+        <div class="tab-pane" id="tab-simulation">
+            <div class="simulation-layout">
+                <!-- Controls Sidebar -->
+                <div class="glass-panel sim-controls-pane">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-sliders"></i> Sensor Parameter Modifiers</h3>
+                        <span class="badge">Live ML Inference</span>
+                    </div>
+
+                    <!-- Preset Buttons -->
+                    <div class="sim-presets">
+                        <label>Load Scenario Preset:</label>
+                        <div class="preset-buttons-grid">
+                            <button class="preset-btn active" data-preset="nominal">Nominal Stable</button>
+                            <button class="preset-btn" data-preset="bearing">Bearing Spall</button>
+                            <button class="preset-btn" data-preset="thermal">Thermal Runaway</button>
+                            <button class="preset-btn" data-preset="lubrication">Lube Pressure Drop</button>
+                            <button class="preset-btn" data-preset="tooling">Tool Wear Edge</button>
+                        </div>
+                    </div>
+
+                    <!-- Sliders -->
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Vibration RMS Velocity:</span>
+                            <b id="valVibRms">1.40 mm/s</b>
+                        </div>
+                        <input type="range" id="sliderVibRms" min="0.5" max="12.0" step="0.1" value="1.4">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Bearing Temperature:</span>
+                            <b id="valBearingTemp">52.0 °C</b>
+                        </div>
+                        <input type="range" id="sliderBearingTemp" min="35" max="115" step="0.5" value="52.0">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Lube Oil Pressure:</span>
+                            <b id="valLubePress">5.20 bar</b>
+                        </div>
+                        <input type="range" id="sliderLubePress" min="1.0" max="7.0" step="0.05" value="5.20">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Acoustic Emission:</span>
+                            <b id="valAcousticDb">46.0 dB</b>
+                        </div>
+                        <input type="range" id="sliderAcousticDb" min="35" max="100" step="0.5" value="46.0">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Electrical Current Load:</span>
+                            <b id="valElecLoad">72.0 %</b>
+                        </div>
+                        <input type="range" id="sliderElecLoad" min="40" max="140" step="1" value="72">
+                    </div>
+
+                    <div class="slider-group">
+                        <div class="slider-header">
+                            <span>Shaft / Spindle Speed:</span>
+                            <b id="valRpm">6000 RPM</b>
+                        </div>
+                        <input type="range" id="sliderRpm" min="1000" max="18000" step="100" value="6000">
+                    </div>
+
+                    <!-- Interventions Toggles -->
+                    <div class="intervention-toggles">
+                        <label>Simulate Proactive Interventions:</label>
+                        <div class="toggle-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="chkThrottle">
+                                <span>Apply 18% Load Throttle (Protocol Beta)</span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="chkCoolant">
+                                <span>Engage Auxiliary Coolant Chiller (-14.5°C)</span>
+                            </label>
+                        </div>
+                        <div class="toggle-row">
+                            <label class="checkbox-label">
+                                <input type="checkbox" id="chkLube">
+                                <span>Autonomous Lubrication Injection (+1.6 bar)</span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Simulation Results Pane -->
+                <div class="glass-panel sim-results-pane">
+                    <div class="panel-header">
+                        <h3><i class="fa-solid fa-chart-line"></i> Counterfactual Impact & Risk Mitigation</h3>
+                        <span class="badge" id="simEffectivenessBadge">Optimal Stabilization</span>
+                    </div>
+
+                    <!-- Delta Comparison Cards -->
+                    <div class="sim-delta-grid">
+                        <div class="sim-card">
+                            <span class="card-label">RUL Horizon Extension</span>
+                            <h3 class="card-val" id="simRulGain">+35.0 Hours</h3>
+                            <span class="card-sub" id="simRulSub">Baseline: 12.0h → Mitigated: 47.0h</span>
+                        </div>
+
+                        <div class="sim-card">
+                            <span class="card-label">Failure Risk Reduction</span>
+                            <h3 class="card-val" id="simRiskReduction">-56.2%</h3>
+                            <span class="card-sub" id="simRiskSub">Baseline: 78.4% → Mitigated: 22.2%</span>
+                        </div>
+
+                        <div class="sim-card highlight-glow">
+                            <span class="card-label">Financial Risk Mitigation</span>
+                            <h3 class="card-val" id="simRiskAvoidance">$1,450,000</h3>
+                            <span class="card-sub">Preserved Net Capital</span>
+                        </div>
+                    </div>
+
+                    <!-- Comparative Table -->
+                    <div class="sim-compare-table-wrap">
+                        <table class="sim-table">
+                            <thead>
+                                <tr>
+                                    <th>Metric / Diagnostic</th>
+                                    <th>Unmitigated Baseline</th>
+                                    <th>After AI Intervention</th>
+                                    <th>Operational Benefit</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><b>Failure Probability</b></td>
+                                    <td id="rowBaseProb">78.4% (Critical)</td>
+                                    <td id="rowMitProb">22.2% (Controlled)</td>
+                                    <td><span class="badge-pill green">Risk Defused</span></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Diagnosed Failure Mode</b></td>
+                                    <td id="rowBasePattern">Bearing_Degradation</td>
+                                    <td id="rowMitPattern">Controlled Vibration</td>
+                                    <td><span class="badge-pill green">Spalling Arrested</span></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Remaining Useful Life</b></td>
+                                    <td id="rowBaseRUL">12.0 Hours</td>
+                                    <td id="rowMitRUL">47.0 Hours</td>
+                                    <td><span class="badge-pill green">+35h Proactive Buffer</span></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Autonomous Protocol</b></td>
+                                    <td id="rowBaseProto">PROTOCOL_ALPHA</td>
+                                    <td id="rowMitProto">PROTOCOL_BETA</td>
+                                    <td><span class="badge-pill green">Production Sustained</span></td>
+                                </tr>
+                                <tr>
+                                    <td><b>Financial Exposure</b></td>
+                                    <td id="rowBaseExp">$1,820,000</td>
+                                    <td id="rowMitExp">$370,000</td>
+                                    <td><span class="badge-pill green">$1.45M Preserved</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TAB 5: ENTERPRISE ANALYTICS & ROI ================= -->
+        <div class="tab-pane" id="tab-analytics">
+            <div class="analytics-layout">
+                <!-- Plants Performance Cards -->
+                <div class="plants-overview-grid">
+                    <div class="plant-card">
+                        <span class="plant-city">Erlangen, Germany</span>
+                        <h4>Electronics Works Erlangen</h4>
+                        <div class="plant-stats">
+                            <div><span>Machines:</span> <b>10 Units</b></div>
+                            <div><span>Downtime Saved:</span> <b>680 Hours</b></div>
+                            <div><span>Annual Savings:</span> <b>$3.84M USD</b></div>
+                        </div>
+                    </div>
+
+                    <div class="plant-card">
+                        <span class="plant-city">Amberg, Germany</span>
+                        <h4>Digital Enterprise Amberg</h4>
+                        <div class="plant-stats">
+                            <div><span>Machines:</span> <b>10 Units</b></div>
+                            <div><span>Downtime Saved:</span> <b>520 Hours</b></div>
+                            <div><span>Annual Savings:</span> <b>$4.62M USD</b></div>
+                        </div>
+                    </div>
+
+                    <div class="plant-card">
+                        <span class="plant-city">Berlin, Germany</span>
+                        <h4>Gas Turbine Works Berlin</h4>
+                        <div class="plant-stats">
+                            <div><span>Machines:</span> <b>10 Units</b></div>
+                            <div><span>Downtime Saved:</span> <b>440 Hours</b></div>
+                            <div><span>Annual Savings:</span> <b>$5.25M USD</b></div>
+                        </div>
+                    </div>
+
+                    <div class="plant-card">
+                        <span class="plant-city">Nuremberg, Germany</span>
+                        <h4>Large Drives Plant Nuremberg</h4>
+                        <div class="plant-stats">
+                            <div><span>Machines:</span> <b>10 Units</b></div>
+                            <div><span>Downtime Saved:</span> <b>590 Hours</b></div>
+                            <div><span>Annual Savings:</span> <b>$2.45M USD</b></div>
+                        </div>
+                    </div>
+
+                    <div class="plant-card">
+                        <span class="plant-city">Karlsruhe, Germany</span>
+                        <h4>Process Automation Karlsruhe</h4>
+                        <div class="plant-stats">
+                            <div><span>Machines:</span> <b>10 Units</b></div>
+                            <div><span>Downtime Saved:</span> <b>410 Hours</b></div>
+                            <div><span>Annual Savings:</span> <b>$2.28M USD</b></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- High-Resolution Embedded Visualizations -->
+                <div class="charts-gallery-grid">
+                    <div class="chart-display-card">
+                        <h4>Figure 1: The P-F Interval Curve & Early Warning Advantage</h4>
+                        <img src="/static/img_fig1.png" id="imgFig1" alt="P-F Interval Curve">
+                        <p class="chart-caption">Illustrates the +35.7 hour proactive intervention gain achieved by Siemens AI over legacy SCADA temperature threshold trips.</p>
+                    </div>
+
+                    <div class="chart-display-card">
+                        <h4>Figure 2: Multi-Class Failure Pattern Diagnostic Breakdown</h4>
+                        <img src="/static/img_fig2.png" id="imgFig2" alt="Failure Pattern Distribution">
+                        <p class="chart-caption">Distribution of mechanical, electrical, thermal, and tribological failure modes across Siemens asset families.</p>
+                    </div>
+
+                    <div class="chart-display-card">
+                        <h4>Figure 3: Sensor Feature Importance & Attribution</h4>
+                        <img src="/static/img_fig3.png" id="imgFig3" alt="Feature Attribution">
+                        <p class="chart-caption">Vibration RMS, Acoustic Emission, and Thermal differentials drive 72% of machine breakdown diagnosis.</p>
+                    </div>
+
+                    <div class="chart-display-card">
+                        <h4>Figure 4: Downtime Exposure vs Maintenance Synchronization</h4>
+                        <img src="/static/img_fig4.png" id="imgFig4" alt="Production Synchronization">
+                        <p class="chart-caption">Comparing catastrophic run-to-failure exposure against Protocol Beta load-throttling and planned buffer window execution.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Global Toast Notification -->
+    <div class="toast-notification" id="globalToast">
+        <i class="fa-solid fa-circle-check"></i>
+        <div class="toast-text">
+            <h5 id="toastTitle">Notification</h5>
+            <p id="toastMessage">Action completed successfully.</p>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/static/js/dashboard.js"></script>
+</body>
+</html>
+
